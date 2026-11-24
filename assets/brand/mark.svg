@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Withdrawal Gaming"><g transform="translate(0 0) scale(1)" ><circle cx="120" cy="124" r="104" fill="#C6DB42" stroke="#242522" stroke-width="10"/>
+      <circle cx="120" cy="124" r="86" fill="none" stroke="#242522" stroke-width="3" opacity=".35"/>
+      <path d="M44 172H196" stroke="#242522" stroke-width="6" opacity=".55"/>
+      <path d="M131.6 160.0 120.3 106.4H119.7L108.4 160.0H77.2L56.6 71.9H86.1L96.2 121.9H96.7L106.7 71.9H134.6L145.2 121.9H145.7L155.2 71.9H183.4L162.8 160.0Z" fill="#242522"/>
+      <g transform="translate(196 40) rotate(-32)">
+      <path d="M0 -20.909090909090907H25.090909090909093A20.909090909090907 20.909090909090907 0 0 1 25.090909090909093 20.909090909090907H0Z" fill="#F2EEE4" stroke="#242522" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M0 -20.909090909090907H-25.090909090909093A20.909090909090907 20.909090909090907 0 0 0 -25.090909090909093 20.909090909090907H0Z" fill="#F05432" stroke="#242522" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M-27.181818181818183 -9.409090909090908H-8.363636363636363" stroke="#fff" stroke-width="5.6000000000000005" stroke-linecap="round" opacity=".55"/></g></g></svg>
