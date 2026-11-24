@@ -154,6 +154,7 @@
         <p>${esc(g.direction)}</p>
         <h2 style="font-size:28px;margin:34px 0 0">Specification</h2>
         ${label(g)}
+        ${g.alt ? `<h2 style="font-size:28px;margin:34px 0 12px">Alternate cover</h2><div style="display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap"><img src="assets/games/${g.slug}_v1_480w.webp" alt="${esc(g.title)} alternate cover, earlier concept" loading="lazy" decoding="async" style="width:180px;height:auto;filter:drop-shadow(0 8px 14px rgba(36,37,34,.2))"><p class="small" style="max-width:30ch;margin:0">Earlier cover concept, kept for comparison. The main cover above is the current direction.</p></div>` : ''}
         <h2 style="font-size:28px;margin:34px 0 10px">Demo & operators</h2>
         <p>${g.demo ? 'A demo is available.' : 'No public demo is available yet. A free-play demo will be published when a build is approved.'} Operators can request early access to artwork, game sheets and integration timelines.</p>
         <a class="btn solid" href="#partners" data-game="${g.slug}">Enquire about ${g.title}</a>
