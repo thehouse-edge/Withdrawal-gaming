@@ -83,7 +83,8 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: .98; ma
 .strip b { color: var(--acid); font-weight: 700; }
 .strip button { all: unset; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; margin-left: 8px; padding: 8px 4px; margin-block: -8px; display: inline-block; }
 .strip button:focus-visible { outline: 2px solid var(--acid); }
-@media (max-width: 760px) { .strip .wrap > span:first-child { display: none; } .strip .wrap > span { white-space: normal; line-height: 1.4; } }
+@media (max-width: 1060px) { .strip .wrap > span:first-child { display: none; } }
+@media (max-width: 760px) { .strip .wrap > span { white-space: normal; line-height: 1.4; } }
 header.site { position: sticky; top: 0; z-index: 60; background: var(--bone); border-bottom: var(--rule); }
 header.site .wrap { display: flex; align-items: center; gap: 22px; min-height: 70px; }
 .brand { display: block; width: clamp(140px, 13vw, 176px); color: var(--ink); flex: none; padding: 12px 0; }
