@@ -1,6 +1,9 @@
 /* WITHDRAWAL GAMING - site content & game metadata.
    Presentation lives in app.js; this file is data only, so games can be added
    (or moved to a CMS / JSON feed) without touching layout code.
+   ARTWORK SWAP: each game's `cover` is null -> the site uses assets/games/<slug>_480w.webp
+   and <slug>_960w.webp. To use new art, either overwrite those two files (same names),
+   or set cover: 'assets/games/final/<file>.png' (any proportion - it is fitted to a 3:4 slot).
    RULE: no RTP, certified max win, release date or mechanic is published
    unless it comes from approved game documentation. Unknown = null -> "TBC". */
 window.WG = {
@@ -14,7 +17,7 @@ window.WG = {
 
   games: [
     {
-      slug: 'sinners', lot: '001', title: 'SINNERS', status: 'in-development', featured: true, alt: true,
+      slug: 'sinners', band: '#7A1216', cover: null, lot: '001', title: 'SINNERS', status: 'in-development', featured: true, alt: true,
       theme: 'Religious satire', world: 'Candlelit gothic cathedral, stained glass, heaven and hell sharing a pew',
       palette: ['#9E1A1A', '#E8B53A', '#F3E2C0'],
       taglines: ['REPENT. SIN. WIN.', 'FORGIVE ME FATHER, FOR I HAVE SPUN.'],
@@ -30,7 +33,7 @@ window.WG = {
       demo: false,
     },
     {
-      slug: 'sniffers', lot: '002', title: 'SNIFFERS', status: 'concept', featured: true, alt: true,
+      slug: 'sniffers', band: '#1E2577', cover: null, lot: '002', title: 'SNIFFERS', status: 'concept', featured: true, alt: true,
       theme: 'Dark comedy', world: 'A neon city after midnight, one table and some very bad decisions',
       palette: ['#26309A', '#E0218A', '#C7782E'],
       short: 'He used to have the best nose on the force. That was the problem.',
@@ -44,7 +47,7 @@ window.WG = {
       demo: false,
     },
     {
-      slug: 'doom-scroll', lot: '003', title: 'DOOM SCROLL', status: 'concept', featured: true, alt: true,
+      slug: 'doom-scroll', band: '#8C3412', cover: null, lot: '003', title: 'DOOM SCROLL', status: 'concept', featured: true, alt: true,
       theme: 'Internet satire', world: 'A sagging purple sofa, a dozen open feeds and no idea what time it is',
       palette: ['#E3641E', '#2B6FE0', '#7A2C8C'],
       short: 'One more notification. Then sleep. Probably.',
@@ -58,7 +61,7 @@ window.WG = {
       demo: false,
     },
     {
-      slug: 'mid-life-crisis', lot: '004', title: 'MID-LIFE CRISIS', status: 'concept', alt: true,
+      slug: 'mid-life-crisis', band: '#8E0F2B', cover: null, lot: '004', title: 'MID-LIFE CRISIS', status: 'concept', alt: true,
       theme: 'Lifestyle satire', world: 'Ocean boulevard at permanent sunset',
       palette: ['#C8102E', '#F7A531', '#7B2A8C'],
       short: 'New car. New shirt. Same guy.',
@@ -71,7 +74,7 @@ window.WG = {
       demo: false,
     },
     {
-      slug: 'dirty-laundry', lot: '005', title: 'DIRTY LAUNDRY', status: 'concept', alt: true,
+      slug: 'dirty-laundry', band: '#0B4F45', cover: null, lot: '005', title: 'DIRTY LAUNDRY', status: 'concept', alt: true,
       theme: 'Crime comedy', world: 'A laundromat that is somehow always busy and never has customers',
       palette: ['#0F6B5C', '#E84FA8', '#9BC66A'],
       short: 'Open 24 hours. Nobody has ever seen a customer.',
@@ -84,7 +87,7 @@ window.WG = {
       demo: false,
     },
     {
-      slug: 'cult-classic', lot: '006', title: 'CULT CLASSIC', status: 'concept', alt: true,
+      slug: 'cult-classic', band: '#46206B', cover: null, lot: '006', title: 'CULT CLASSIC', status: 'concept', alt: true,
       theme: 'Absurd fiction', world: 'Purple clouds, a blazing sunburst and a very devoted audience',
       palette: ['#5B2A86', '#F2B53A', '#F4EDE1'],
       short: 'Membership is free. Leaving is complicated.',
@@ -99,11 +102,20 @@ window.WG = {
     },
   ],
 
+  faq: [
+    ['Is Withdrawal Gaming a casino?', 'No. We are a game development studio. We do not take bets, hold player accounts or offer real-money play. Our games are intended for licensed operators.'],
+    ['Can I play your games?', 'Not yet. Every title is a concept or in development. When a game is certified and released, it will be available through licensed operators in the markets where it is permitted.'],
+    ['When is the first release?', 'No release date has been announced. We will publish dates when they are real.'],
+    ['Do you hold a gambling licence?', 'Not at present. Our current regulatory status is set out on the licensing page and will be updated as anything is confirmed.'],
+    ['Are the RTP and maximum win figures final?', 'No. Figures such as the 66,666× SINNERS target are development targets. Certified figures will be published with each approved build.'],
+    ['I am an operator. How do I get early access?', 'Use the partners page to send an enquiry. We are sharing artwork, game sheets and integration timelines with interested partners.'],
+  ],
+
   posts: [
     { slug: 'introducing-withdrawal-gaming', kind: 'Studio announcement', title: 'Introducing Withdrawal Gaming', date: null,
       dek: 'An independent studio for slot games with characters, plots and a questionable sense of humour.',
       body: ['Withdrawal Gaming is a new independent studio building original slot concepts for licensed operators. We start with a world, a cast and a joke worth telling, and only then work out the reels.', 'Our first six titles are in concept or development. This site shows the art direction and the thinking behind each one. Technical specifications will appear only when they come from approved documentation.', 'If you run a platform, an aggregator or a casino brand and want an early look, the partners page is the place to start.'] },
-    { slug: 'sinners-development-update', kind: 'Development update', title: 'SINNERS: notes from the confessional', date: null,
+    { slug: 'sinners-development-update', kind: 'Clinical notes', title: 'SINNERS: notes from the confessional', date: null,
       dek: 'Our flagship enters development. What we can share, and what we cannot yet.',
       body: ['SINNERS is our flagship concept: a 5×5 slot about temptation, with heaven and hell competing over a golden apple.', 'The 66,666× figure you may have heard is a development target. It is not a certified specification and will not be presented as one until independent testing confirms it.', 'RTP, volatility and features will be published with the certified build. Until then, expect artwork, characters and the occasional confession.'] },
     { slug: 'why-our-games-have-a-plot', kind: 'Behind the scenes', title: 'Why our games have a plot', date: null,
