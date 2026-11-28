@@ -1,4 +1,4 @@
-# Withdrawal Gaming · website demo (V2)
+# Withdrawal Gaming · website demo (V2.1)
 
 Static site, no build step. Served by GitHub Pages from `main` / root:
 https://thehouse-edge.github.io/Withdrawal-gaming/
@@ -34,5 +34,15 @@ To hide them, set `alt: false` for that game in `js/data.js`.
 - `js/legal.js`: legal drafts
 - `css/site.css`: design system
 
+## Play on Stake link
+`js/data.js`: `stakeUrl` (currently the Only on Stake collection, owner-supplied, unverified). When the official
+Withdrawal Gaming provider page exists, set `providerUrl`; it takes priority everywhere. No affiliate parameters are added.
+
+## Favicons
+`favicon.ico` (16/32/48), `assets/brand/favicon/` (SVG, 16, 32, 48, 180 Apple touch, 192/512 manifest icons).
+
 ## Rollback
-V1 is preserved on the `v1-archive` branch. To restore it, set Pages to deploy from `v1-archive`, or reset `main` to commit `895400a`.
+- V2: branch `v2-archive` (commit 185c50f)
+- V1: branch `v1-archive` (commit 895400a)
+
+To restore one, set Pages to deploy from that branch, or reset `main` to its commit.

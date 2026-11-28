@@ -9,7 +9,10 @@
 window.WG = {
   config: {
     // Owner to supply. Until then the UI shows these as "to be confirmed".
-    contactEmail: null, partnersEmail: null, pressEmail: null,
+    contactEmail: null, pressEmail: null,
+    // PLAY ON STAKE destination. Official 'Only on Stake' collection (owner-supplied, to be verified).
+    // When the official Withdrawal Gaming provider page exists, put its URL in providerUrl - it takes priority.
+    stakeUrl: 'https://stake.com/casino/group/only-on-stake', providerUrl: null,
     formEndpoint: null, // e.g. "https://api.example.com/enquiry" - forms refuse to fake a send while null
     company: { legalName: null, regNumber: null, address: null, jurisdiction: null },
     social: [ { name: 'Instagram', url: null }, { name: 'X', url: null }, { name: 'LinkedIn', url: null }, { name: 'YouTube', url: null } ],
@@ -103,23 +106,23 @@ window.WG = {
   ],
 
   faq: [
-    ['Is Withdrawal Gaming a casino?', 'No. We are a game development studio. We do not take bets, hold player accounts or offer real-money play. Our games are intended for licensed operators.'],
-    ['Can I play your games?', 'Not yet. Every title is a concept or in development. When a game is certified and released, it will be available through licensed operators in the markets where it is permitted.'],
+    ['Is Withdrawal Gaming a casino?', 'No. We are an independent game development studio. We do not accept wagers, operate player accounts or provide real-money gambling services.'],
+    ['Can I play your games?', 'Not yet. Every title is a concept or in development. We intend to release them exclusively on Stake, subject to platform approval, in the markets where Stake makes them available.'],
     ['When is the first release?', 'No release date has been announced. We will publish dates when they are real.'],
     ['Do you hold a gambling licence?', 'Not at present. Our current regulatory status is set out on the licensing page and will be updated as anything is confirmed.'],
     ['Are the RTP and maximum win figures final?', 'No. Figures such as the 66,666× SINNERS target are development targets. Certified figures will be published with each approved build.'],
-    ['I am an operator. How do I get early access?', 'Use the partners page to send an enquiry. We are sharing artwork, game sheets and integration timelines with interested partners.'],
+    ['Will your games be available on other casinos?', 'No. We intend to distribute our games exclusively through Stake Engine under the Only on Stake model. We are not seeking other operators or aggregators.'],
   ],
 
   posts: [
     { slug: 'introducing-withdrawal-gaming', kind: 'Studio announcement', title: 'Introducing Withdrawal Gaming', date: null,
       dek: 'An independent studio for slot games with characters, plots and a questionable sense of humour.',
-      body: ['Withdrawal Gaming is a new independent studio building original slot concepts for licensed operators. We start with a world, a cast and a joke worth telling, and only then work out the reels.', 'Our first six titles are in concept or development. This site shows the art direction and the thinking behind each one. Technical specifications will appear only when they come from approved documentation.', 'If you run a platform, an aggregator or a casino brand and want an early look, the partners page is the place to start.'] },
+      body: ['Withdrawal Gaming is a new independent studio building original slot games. We start with a world, a cast and a joke worth telling, and only then work out the reels.', 'Our first six titles are in concept or development. This site shows the art direction and the thinking behind each one. Technical specifications will appear only when they come from approved documentation.', 'Our games are being developed for exclusive distribution on Stake through Stake Engine. They will appear there once they have been approved, and not before.'] },
     { slug: 'sinners-development-update', kind: 'Clinical notes', title: 'SINNERS: notes from the confessional', date: null,
       dek: 'Our flagship enters development. What we can share, and what we cannot yet.',
       body: ['SINNERS is our flagship concept: a 5×5 slot about temptation, with heaven and hell competing over a golden apple.', 'The 66,666× figure you may have heard is a development target. It is not a certified specification and will not be presented as one until independent testing confirms it.', 'RTP, volatility and features will be published with the certified build. Until then, expect artwork, characters and the occasional confession.'] },
     { slug: 'why-our-games-have-a-plot', kind: 'Behind the scenes', title: 'Why our games have a plot', date: null,
       dek: 'On characters, satire and not drawing another gold coin.',
-      body: ['Most lobbies are full of gold coins, gemstones and lightning. We prefer people: a detective bloodhound, a laundromat owner with excellent cash flow, a man in a red convertible discovering himself.', 'Every Withdrawal Gaming title starts as a premise you could pitch as a cartoon. If the characters are not funny without the reels, the reels will not save them.', 'The satire is aimed at the characters and their worlds, never at players. Our games are for adults, played responsibly, on licensed platforms only.'] },
+      body: ['Most lobbies are full of gold coins, gemstones and lightning. We prefer people: a detective bloodhound, a laundromat owner with excellent cash flow, a man in a red convertible discovering himself.', 'Every Withdrawal Gaming title starts as a premise you could pitch as a cartoon. If the characters are not funny without the reels, the reels will not save them.', 'The satire is aimed at the characters and their worlds, never at players. Our games are for adults only, and should be played responsibly.'] },
   ],
 };

@@ -11,6 +11,10 @@
   const code = g => `WG-${g.lot}`;
   const tbc = (v, t = 'TBC') => v ? esc(v) : `<span class="tbc">${t}</span>`;
   const WORDMARK = $('#wm-src').innerHTML;
+  const STAKE = C.providerUrl || C.stakeUrl;
+  const ARROW = '<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.5 3H9v4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/></svg>';
+  const stakeBtn = (label = 'Play on Stake', cls = '') => `<a class="stake ${cls}" href="${esc(STAKE)}" target="_blank" rel="noopener noreferrer" aria-label="${label} (opens stake.com in a new tab; Withdrawal Gaming releases are not available yet)">${label}${ARROW}</a>`;
+  let capsulePlayed = false; // once per page load: refresh replays, internal navigation does not
 
   /* artwork: one function decides which file a cover uses (see data.js ARTWORK SWAP) */
   function cover(g, sizes = '(max-width: 900px) 46vw, 400px', eager = false, cls = '') {
@@ -34,10 +38,10 @@
 
   /* ---------------- shared blocks ---------------- */
   const release = (g, eager) => `<a class="release rv" href="#game-${g.slug}"><div class="slot">${cover(g, undefined, eager)}</div>
-    <div class="tag"><span class="mono">${code(g)}</span><h3>${g.title}</h3>${stamp(g.status)}<p>${esc(g.short)}</p><span class="go">Open release sheet →</span>${barcode(code(g) + '-B02', 18)}</div></a>`;
+    <div class="tag"><span class="mono">${code(g)}</span><h3>${g.title}</h3>${stamp(g.status)}<p>${esc(g.short)}</p></div></a>`;
   const specRows = g => {
     const s = g.specs;
-    return [['Grid', s.grid], ['RTP', s.rtp], ['Volatility', s.volatility], ['Maximum win', s.maxWin], ['Bonus features', s.features], ['Release date', s.release, 'Not announced'], ['Devices', s.devices], ['Demo', g.demo ? 'Available' : null, 'Not available yet']]
+    return [['Grid', s.grid], ['RTP', s.rtp], ['Volatility', s.volatility], ['Maximum win', s.maxWin], ['Bonus features', s.features], ['Release date', s.release, 'Not announced'], ['Devices', s.devices], ['Availability', 'Planned: Only on Stake, subject to platform approval'], ['Demo', g.demo ? 'Available' : null, 'Not available yet']]
       .map(([k, v, t]) => `<tr><th scope="row">${k}</th><td>${tbc(v, t)}</td></tr>`).join('');
   };
   const pil = g => `<div class="pil"><div class="ph"><span>Product information · ${code(g)}</span><span>${STATUS[g.status][0]}</span></div>
@@ -47,10 +51,29 @@
   const tape = (items, cls = '') => `<div class="tape ${cls}" aria-hidden="true"><div class="track">${Array(2).fill(items.map(t => `<span>${t}</span>`).join('')).join('')}</div></div>`;
   const ledger = (list, thumbs = true) => `<table class="ledger rv"><caption class="sr">Development status of every release</caption><thead><tr><th>Cat. no.</th><th>Release</th><th class="x">Category</th><th>Status</th><th class="x">Release date</th></tr></thead><tbody>
     ${list.map(g => `<tr><td class="mono">${code(g)}</td><td class="t"><a href="#game-${g.slug}">${thumbs ? cover(g, '54px') : ''}${g.title}</a></td><td class="x">${esc(g.theme)}</td><td>${stamp(g.status)}</td><td class="x mono">Not announced</td></tr>`).join('')}</tbody></table>`;
-  const index = list => `<div class="index">${list.map(p => `<a class="entry rv" href="#update-${p.slug}"><span class="k">${p.kind}<br><span class="stamp draft" style="margin-top:10px">Draft · date TBC</span></span><h3>${esc(p.title)}</h3><p>${esc(p.dek)}</p></a>`).join('')}</div>`;
+  const index = list => `<div class="index">${list.map(p => `<a class="entry rv" href="#update-${p.slug}"><span class="k">${p.kind}<br><span class="stamp tbd" style="margin-top:10px">Draft · date TBC</span></span><h3>${esc(p.title)}</h3><p>${esc(p.dek)}</p></a>`).join('')}</div>`;
   const faq = () => `<div class="faq"><div class="rv"><p class="code mono" style="font-size:13px;letter-spacing:.12em">PIL · READ BEFORE USE</p><h2 style="font:400 clamp(46px,5.4vw,90px)/.86 var(--cond);text-transform:uppercase">Patient information</h2><p style="margin-top:18px">Frequently asked questions, answered plainly.</p></div>
     <div class="rv">${D.faq.map(([q, a], i) => `<details><summary><span class="mono">Q.${String(i + 1).padStart(2, '0')}</span>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</div></div>`;
   const head = (c, h, p) => `<section class="page-head"><div class="wrap"><p class="code">${c}</p><h1 id="page-h">${h}</h1>${p ? `<p>${p}</p>` : ''}</div></section>`;
+
+
+  /* exclusive distribution: replaces trade/partner sections (V2.1) */
+  const script = () => `<div class="script"><div class="ph"><span>Rx · Dispense as written</span><span>WG-02</span></div>
+    <table><caption class="sr">Distribution label</caption>
+      <tr><th scope="row">Platform</th><td>Stake</td></tr><tr><th scope="row">Channel</th><td>Stake Engine</td></tr>
+      <tr><th scope="row">Model</th><td>Only on Stake</td></tr><tr><th scope="row">Substitution</th><td>Not permitted</td></tr>
+      <tr><th scope="row">Status</th><td>In development. Not yet approved or released</td></tr></table>
+    <div class="pf"><span>No generic substitute.</span>${barcode('WG-ONLY-ON-STAKE')}</div></div>`;
+  const only = () => `<section class="only" aria-labelledby="only-h"><div class="wrap">
+      <div class="rv"><p class="code">Distribution · Single source</p><h2 id="only-h">Exclusively.<br>On Stake.</h2>
+        <p class="sub">One studio. One platform. No unnecessary prescriptions.</p>
+        <p>Our games are being developed for exclusive distribution on Stake through Stake Engine, under the Only on Stake model. One lobby, one community, one place to find them. No aggregators, no generic substitutes.</p></div>
+      <div class="rv">${script()}<div class="cta">${stakeBtn('Visit Stake', 'lg')}<p>Our games are not on Stake yet. Stake is.</p></div></div>
+    </div><p class="wrap fine">Withdrawal Gaming is an independent studio. Our games have not yet been approved or released. Stake and Stake Engine are trademarks of their respective owners; no endorsement, approval or placement is implied or guaranteed.</p></section>`;
+  function capsuleVideo() {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, still = reduce || capsulePlayed;
+    return `<video ${still ? 'poster="assets/video/withdrawal-capsule-poster.webp" preload="metadata"' : 'autoplay preload="auto"'} muted playsinline disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" aria-label="Withdrawal Gaming capsule mascot animation" src="assets/video/withdrawal-capsule.mp4"></video>`;
+  }
 
   /* ---------------- views ---------------- */
   const V = {};
@@ -59,21 +82,20 @@
     return `
     <section class="hero" aria-labelledby="hero-h">
       <div class="wrap">
-        <div class="meta" aria-label="Studio facts"><span>Batch WG-02</span><span>Six releases in the lab</span><span>For licensed operators</span><span>18+ only</span></div>
+        <div class="meta" aria-label="Studio facts"><span>Batch WG-02</span><span>Six releases in the lab</span><span>Only on Stake · planned</span><span>18+ only</span></div>
         <div class="body">
           <div>
             <h1 id="hero-h"><span class="ln"><span>Not as</span></span><span class="ln"><span>prescribed<span class="stop">.</span></span></span></h1>
-            <p class="lede">An independent studio making slot games with characters, plots and a questionable sense of humour. Labelled honestly. Supplied to licensed operators only.</p>
-            <div class="ctas"><a class="btn solid" href="#games">The collection</a><a class="btn" href="#partners">Trade enquiries</a></div>
+            <p class="lede">An independent studio making slot games with characters, plots and a questionable sense of humour. Labelled honestly. Developed for exclusive release on Stake.</p>
+            <div class="ctas"><a class="btn solid" href="#games">The collection</a><a class="btn" href="#only-on-stake">Only on Stake</a></div>
           </div>
           <div class="stage">
             <div class="capsule">
-              <video muted playsinline preload="auto" aria-label="Withdrawal Gaming capsule mascot animation" src="assets/video/withdrawal-capsule.mp4"></video>
-              <button class="btn sm plain replay" type="button" aria-label="Replay the capsule animation">↺ Replay</button>
+              ${capsuleVideo()}
             </div>
             <div class="rx" aria-label="Studio label">
               <div class="perf" aria-hidden="true"></div>
-              <div class="in"><div class="top"><span>WG-02</span><span>For trade use</span></div>
+              <div class="in"><div class="top"><span>WG-02</span><span>Single source</span></div>
                 <strong>Withdrawal Gaming</strong>
                 <span>Contents: 6 original slot releases<br>Status: concept &amp; development</span>
                 <div class="warn">Keep out of reach of children. 18+ only.</div>
@@ -85,7 +107,7 @@
       <span class="vert" aria-hidden="true">Side effects may vary</span>
       <div class="wrap signoff" aria-hidden="true">${WORDMARK}</div>
     </section>
-    ${tape(['Side effects may vary', 'Six releases in the lab', 'For licensed operators only', '18+', 'Not as prescribed', 'Characters first'])}
+    ${tape(['Side effects may vary', 'Six releases in the lab', 'Only on Stake', '18+', 'Not as prescribed', 'Characters first'])}
 
     <section class="wrap" aria-labelledby="col-h">
       ${opener('Catalogue · WG-001 to WG-006', '<span id="col-h">The collection</span>', 'Games', 'Six original releases, each with its own world and cast. All are concepts or in development: nothing here is live or available to play.', '<p style="margin-top:14px"><a class="link" href="#games">Filter the full collection</a></p>')}
@@ -93,7 +115,6 @@
     </section>
 
     <section class="spot" style="--band:${f.band}" aria-labelledby="spot-h">
-      <span class="big" aria-hidden="true">${code(f)}</span>
       <div class="wrap">
         <div><a class="art" href="#game-${f.slug}" aria-label="${f.title} release sheet">${cover(f, '(max-width: 860px) 320px, 480px')}</a><div class="lot" aria-hidden="true"><strong>Lot ${f.lot} · Flagship</strong><span>Grid 5×5 proposed<br>Release date not announced</span>${barcode(code(f))}</div></div>
         <div class="copy rv">
@@ -102,7 +123,7 @@
           <p class="tl">${f.taglines.map(t => `<span>${t}</span>`).join('')}</p>
           <p>${esc(f.description)}</p>
           ${pil(f)}
-          <div class="ctas"><a class="btn solid" href="#game-${f.slug}">Read the release sheet</a><a class="btn" href="#partners" data-game="${f.slug}">Enquire</a></div>
+          <div class="ctas"><a class="btn solid" href="#game-${f.slug}">Read the release sheet</a></div>
         </div>
       </div>
     </section>
@@ -120,7 +141,7 @@
           <div class="cols">
             <p>Most lobbies run on gold coins, gemstones and the same three ancient gods. We would rather draw a detective bloodhound, a laundromat with excellent cash flow and a man in a red convertible finding himself.</p>
             <p>Every release starts as a premise you could pitch as a cartoon. Mechanics come next, and they have to earn their place. Nothing goes public until it is verified.</p>
-            <p>We are a game studio, not a casino. We supply licensed operators; we do not take bets or hold player accounts.</p>
+            <p>We are a game studio, not a casino. We develop games for exclusive release on Stake; we do not accept wagers or hold player accounts.</p>
           </div>
           <p style="margin-top:10px"><a class="link" href="#studio">Read the full formula</a></p>
         </div>
@@ -133,12 +154,7 @@
       </div>
     </div></section>
 
-    <section class="trade" aria-labelledby="trade-h"><div class="wrap">
-      <div class="rv"><p class="code">Operators · Aggregators · Platforms</p><h2 id="trade-h">For trade use only.</h2>
-        <p>We are opening early conversations about distribution, integration and launch planning with licensed partners.</p></div>
-      <div class="rv"><ul><li>Operators &amp; casino brands <span>→</span></li><li>Aggregators &amp; distribution <span>→</span></li><li>Platform integrations <span>→</span></li><li>Marketing assets <span>→</span></li></ul>
-        <a class="btn solid" href="#partners">Start a trade enquiry</a></div>
-    </div></section>
+    ${only()}
 
     <section class="wrap" aria-labelledby="se-h">
       ${opener('News &amp; clinical notes', '<span id="se-h">Side effects</span>', 'News', 'Studio announcements, development notes and the occasional confession.').replace('opener rv', 'opener verm rv')}
@@ -202,8 +218,8 @@
         <aside class="side">
           <h2 style="margin-top:0"><span class="mono">04</span>Product information</h2>
           ${pil(g)}
-          <p>${g.demo ? 'A free-play demo is available.' : 'No public demo yet. A free-play demo will be published when a build is approved.'} Operators can request artwork, game sheets and integration timelines.</p>
-          <a class="btn solid" href="#partners" data-game="${g.slug}">Enquire about ${g.title}</a>
+          <p>${g.demo ? 'A free-play demo is available.' : 'No public demo yet.'} ${g.title} is being developed for exclusive release on Stake, subject to platform approval. It is not available yet.</p>
+          <a class="btn" href="#only-on-stake">How our games are distributed</a>
         </aside>
       </div>
       <a class="next" href="#game-${next.slug}" style="--nb:${next.band}"><div class="wrap"><div><span class="mono">Next release · ${code(next)}</span><strong>${next.title} →</strong></div>${cover(next, '140px')}</div></a>
@@ -219,14 +235,14 @@
         <h2>How we work</h2>
         <ul><li><b>Characters first.</b> If the cast is not funny without the reels, the reels will not save it.</li><li><b>Readable at lobby size.</b> Every cover is designed to work as a phone thumbnail.</li><li><b>Honest labels.</b> No RTP, maximum win or release date goes public until it is verified.</li><li><b>Satire with limits.</b> The jokes are aimed at our characters and their worlds, never at players, and we never present gambling as a solution to anything.</li></ul>
         <h2>Where we are</h2>
-        <p>We are a new studio. Our six releases are concepts or in development, and we are opening conversations with operators and platforms. We have no released games, awards or certifications to report, and we will not pretend otherwise.</p>
+        <p>We are a new studio. Our six releases are concepts or in development, and are planned for exclusive release on Stake. We have no released games, awards or certifications to report, and we will not pretend otherwise.</p>
       </div>
       <div class="sheet in">
         <div class="sh"><span>Studio vs operator</span><span>Fact sheet</span></div>
         <div style="padding:16px">
-          <p><b>We are</b> a game development studio supplying game software to licensed businesses.</p>
+          <p><b>We are</b> an independent game development studio.</p>
           <p><b>We are not</b> a casino. We do not accept wagers, run player accounts or offer real-money gambling on this website.</p>
-          <p><b>Audience:</b> licensed operators, aggregators and platform partners, subject to the law and certification requirements of each market.</p>
+          <p><b>Distribution:</b> intended exclusively via Stake Engine, for release on Stake. Not yet approved.</p>
           <p style="margin:0"><b>Age:</b> our games are for adults only (18+, or higher where local law requires).</p>
         </div>
       </div>
@@ -237,20 +253,15 @@
   V.updates = () => head('News · Clinical notes', 'Side effects', 'Studio announcements, development notes and behind-the-scenes. Drafts are marked as drafts.') + `<section class="wrap sec">${index(D.posts)}</section>`;
   V.update = slug => {
     const p = D.posts.find(x => x.slug === slug); if (!p) return null;
-    return head(`Side effects · ${p.kind}`, esc(p.title), esc(p.dek)) + `<section class="wrap sec prose"><div class="draft"><span class="stamp draft">Draft</span><span>Publication date to be confirmed. Copy subject to owner approval.</span></div>${p.body.map(b => `<p>${esc(b)}</p>`).join('')}<p style="margin-top:30px"><a class="btn sm" href="#updates">All side effects</a></p></section>`;
+    return head(`Side effects · ${p.kind}`, esc(p.title), esc(p.dek)) + `<section class="wrap sec prose"><div class="draft"><span class="stamp tbd">Draft</span><span>Publication date to be confirmed. Copy subject to owner approval.</span></div>${p.body.map(b => `<p>${esc(b)}</p>`).join('')}<p style="margin-top:30px"><a class="btn sm" href="#updates">All side effects</a></p></section>`;
   };
 
   const opts = a => a.map(o => `<option>${o}</option>`).join('');
   function form(kind) {
-    const pre = store.get('wg-game'), partner = kind === 'partner';
     return `<form class="form" novalidate data-kind="${kind}">
       <div><label for="f-name">Name <span class="req">*</span></label><input id="f-name" name="name" autocomplete="name" required><span class="err"></span></div>
       <div><label for="f-email">Work email <span class="req">*</span></label><input id="f-email" name="email" type="email" autocomplete="email" required><span class="err"></span></div>
-      ${partner ? `<div><label for="f-co">Company <span class="req">*</span></label><input id="f-co" name="company" autocomplete="organization" required><span class="err"></span></div>
-      <div><label for="f-type">Enquiry type <span class="req">*</span></label><select id="f-type" name="type" required><option value="">Choose one</option>${opts(['Operator / casino brand', 'Aggregator', 'Distribution partner', 'Platform integration', 'Commercial partnership', 'Marketing & promotional assets'])}</select><span class="err"></span></div>
-      <div><label for="f-mk">Markets of interest</label><input id="f-mk" name="markets" placeholder="e.g. Ontario, Sweden, Brazil"></div>
-      <div><label for="f-game">Release of interest</label><select id="f-game" name="game"><option value="">Whole collection</option>${D.games.map(g => `<option value="${g.title}" ${pre === g.slug ? 'selected' : ''}>${code(g)} ${g.title}</option>`).join('')}</select></div>`
-      : `<div class="full"><label for="f-topic">Topic <span class="req">*</span></label><select id="f-topic" name="topic" required><option value="">Choose one</option>${opts(['General enquiry', 'Commercial partnership', 'Technical enquiry', 'Media & press', 'Careers & creative collaboration'])}</select><span class="err"></span></div>`}
+      <div class="full"><label for="f-topic">Topic <span class="req">*</span></label><select id="f-topic" name="topic" required><option value="">Choose one</option>${opts(['General enquiry', 'Business enquiry', 'Technical enquiry', 'Media & press', 'Careers & creative collaboration'])}</select><span class="err"></span></div>
       <div class="full"><label for="f-msg">Message <span class="req">*</span></label><textarea id="f-msg" name="message" rows="5" required></textarea><span class="err"></span></div>
       <div class="full check"><input id="f-ok" name="consent" type="checkbox" required><label for="f-ok">I agree that Withdrawal Gaming may use these details to reply to this enquiry, as described in the <a href="#privacy">privacy policy</a>. <span class="req">*</span></label></div>
       <span class="err full" id="f-ok-err"></span>
@@ -259,17 +270,19 @@
     </form>`;
   }
 
-  V.partners = () => head('Operators · Aggregators · Platforms', 'For trade use only', 'For licensed businesses interested in distributing Withdrawal Gaming releases.') + `
+  V['only-on-stake'] = () => head('Distribution · Single source', 'Only on Stake', 'One studio. One platform. No unnecessary prescriptions.') + `
     <section class="wrap sec two">
       <div class="prose">
-        <h2>Who this is for</h2>
-        <ul><li>Licensed operators and casino brands</li><li>Aggregators and distribution partners</li><li>Platform and RGS integrations</li><li>Commercial and co-marketing partnerships</li></ul>
-        <h2>What partners receive</h2>
-        <ul><li>Early access to artwork, characters and game sheets</li><li>Game specifications once verified in approved documentation</li><li>Promotional asset packs (covers, logos, key art) on request</li><li>Integration planning and launch timelines when builds are approved</li></ul>
-        <h2>Status, plainly</h2>
-        <p>Withdrawal Gaming does not currently claim any gambling licence, testing certification, regulatory approval or operator partnership. When any of these are confirmed they will be listed on the <a href="#licensing">licensing page</a>.</p>
+        <h2>Our distribution, plainly</h2>
+        <p>Withdrawal Gaming intends to distribute its games exclusively through Stake Engine, for release on Stake under the Only on Stake model. We are not seeking other casino operators, aggregators or third-party distribution.</p>
+        <h2>Why one platform</h2>
+        <p>We would rather build for one lobby and one community than spread our releases thin. The Only on Stake model is designed around exclusive distribution within the Stake ecosystem, which is where we want our games to live.</p>
+        <h2>Current status</h2>
+        <p>Every Withdrawal Gaming release is a concept or in development. No game has been submitted, approved or released on Stake yet, and no promotion or placement is guaranteed. When a release goes live, its release sheet will say so.</p>
+        <p class="small">Stake and Stake Engine are trademarks of their respective owners. No endorsement is implied.</p>
       </div>
-      <div><h2 style="font:400 clamp(30px,3vw,40px)/1 var(--display);margin-bottom:18px">Trade enquiry</h2>${form('partner')}</div>
+      <div>${script()}<div class="cta" style="margin-top:22px">${stakeBtn('Visit Stake', 'lg')}<p class="small" style="margin:12px 0 0">Opens stake.com in a new tab. Our games are not available there yet.</p></div>
+        <p style="margin-top:34px">Other business, media or technical questions? <a class="link" href="#contact">Contact the studio</a>.</p></div>
     </section>`;
 
   V.contact = () => {
@@ -278,18 +291,18 @@
     <section class="wrap sec">
       <div class="desks">
         <div><h3>General</h3><p>Questions about the studio.</p>${e(C.contactEmail)}</div>
-        <div><h3>Trade</h3><p>Operators, aggregators, platforms. Or use the <a class="link" href="#partners">trade enquiry form</a>.</p>${e(C.partnersEmail)}</div>
+        <div><h3>Business</h3><p>Legitimate business enquiries. We are not seeking distribution partners.</p><span class="tbc">Address to be confirmed</span></div>
         <div><h3>Media &amp; press</h3><p>Interviews, assets, press kit.</p>${e(C.pressEmail)}</div>
         <div><h3>Technical</h3><p>Integration and build questions.</p><span class="tbc">Address to be confirmed</span></div>
         <div><h3>Careers &amp; collaborations</h3><p>Illustrators, animators, developers.</p><span class="tbc">Address to be confirmed</span></div>
         <div><h3>Complaints</h3><p>How we handle complaints about this website is set out in the <a class="link" href="#terms">terms of use</a>.</p><span></span></div>
       </div>
-      <div class="two"><div><h2 style="font:400 clamp(30px,3vw,44px)/1 var(--display)">Send a message</h2><p class="small" style="margin-top:14px">Players with a question about a game on a casino site should contact that operator. We do not hold player accounts.</p></div>${form('contact')}</div>
+      <div class="two"><div><h2 style="font:400 clamp(30px,3vw,44px)/1 var(--display)">Send a message</h2><p class="small" style="margin-top:14px">We do not hold player accounts. Questions about a game on a casino platform should go to that platform.</p></div>${form('contact')}</div>
     </section>`;
   };
 
   for (const [k, p] of Object.entries(window.WG_LEGAL)) V[k] = () => head(`Legal · ${p.kicker}`, p.title, p.lede) + `<section class="wrap sec"><div class="prose">
-      <div class="draft"><span class="stamp draft">Draft</span><span>${p.draft || 'Company jurisdiction, legal structure and licensing status are not yet confirmed. Text marked as to be confirmed must be completed and reviewed by qualified counsel before publication.'}</span></div>
+      <div class="draft"><span class="stamp tbd">Draft</span><span>${p.draft || 'Company jurisdiction, legal structure and licensing status are not yet confirmed. Text marked as to be confirmed must be completed and reviewed by qualified counsel before publication.'}</span></div>
       ${p.body}</div>
       <nav class="legal-nav" aria-label="Legal documents">${Object.entries(window.WG_LEGAL).map(([kk, pp]) => `<a href="#${kk}" ${kk === k ? 'aria-current="page"' : ''}>${pp.short}</a>`).join('')}</nav></section>`;
 
@@ -305,11 +318,11 @@
   }
 
   /* ---------------- router ---------------- */
-  const TITLES = { home: 'Withdrawal Gaming · Not as prescribed.', games: 'The collection', studio: 'The formula', 'coming-soon': 'In the lab', updates: 'Side effects', partners: 'For trade use only', contact: 'Contact' };
-  const NAV = { games: 'games', game: 'games', studio: 'studio', 'coming-soon': 'coming-soon', updates: 'updates', update: 'updates', partners: 'partners', contact: 'contact' };
+  const TITLES = { home: 'Withdrawal Gaming · Not as prescribed.', games: 'The collection', studio: 'The formula', 'coming-soon': 'In the lab', updates: 'Side effects', 'only-on-stake': 'Only on Stake', contact: 'Contact' };
+  const NAV = { games: 'games', game: 'games', studio: 'studio', 'coming-soon': 'coming-soon', updates: 'updates', update: 'updates', contact: 'contact' };
   function route() {
     const h = decodeURIComponent(location.hash.slice(1));
-    let key = h || 'home', arg = null;
+    let key = h === 'partners' ? 'only-on-stake' : (h || 'home'), arg = null;
     if (h.startsWith('game-')) { key = 'game'; arg = h.slice(5); } else if (h.startsWith('update-')) { key = 'update'; arg = h.slice(7); }
     let html = V[key] ? V[key](arg) : null;
     if (html == null) { key = 'notfound'; html = V.notfound(); }
@@ -331,15 +344,14 @@
   }
 
   function capsule() {
-    const box = $('.capsule'), v = box && $('video', box); if (!v) return;
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, seen = store.get('wg-capsule');
-    const toEnd = () => { const go = () => { v.currentTime = Math.max(0, v.duration - 0.04); box.classList.add('done'); }; v.readyState >= 1 ? go() : v.addEventListener('loadedmetadata', go, { once: true }); };
-    v.muted = true; v.defaultMuted = true;
-    if (reduce) { v.poster = 'assets/video/withdrawal-capsule-poster.webp'; v.preload = 'metadata'; box.classList.add('still'); toEnd(); }
-    else if (seen) toEnd();
-    else { const pr = v.play(); if (pr) pr.catch(() => { v.poster = 'assets/video/withdrawal-capsule-poster.webp'; box.classList.add('still'); }); }
-    v.addEventListener('ended', () => { box.classList.add('done'); store.set('wg-capsule', '1'); });
-    $('.replay', box).addEventListener('click', () => { box.classList.remove('done', 'still'); v.currentTime = 0; v.play().catch(() => { }); });
+    const v = $('.capsule video'); if (!v) return;
+    v.muted = true; v.defaultMuted = true; v.controls = false;
+    const toEnd = () => { const go = () => { try { v.currentTime = Math.max(0, v.duration - 0.05); } catch { } }; v.readyState >= 1 ? go() : v.addEventListener('loadedmetadata', go, { once: true }); };
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || capsulePlayed) { v.pause(); toEnd(); return; }
+    capsulePlayed = true; // internal navigation back to home shows the final frame instead of replaying
+    v.addEventListener('ended', () => v.pause());
+    const pr = v.play(); // explicit call for Safari/iOS, which can ignore autoplay on injected video
+    if (pr) pr.catch(() => { v.poster = 'assets/video/withdrawal-capsule-poster.webp'; toEnd(); });
   }
 
   function bindFilters() {
@@ -374,7 +386,6 @@
   }
 
   /* ---------------- chrome ---------------- */
-  document.addEventListener('click', e => { const a = e.target.closest('[data-game]'); if (a) store.set('wg-game', a.dataset.game); });
   $('.menu-toggle').addEventListener('click', e => { const o = $('nav.main').classList.toggle('open'); e.currentTarget.setAttribute('aria-expanded', o); });
   if (local.get('wg-18')) $('.strip .age-note')?.remove();
   $('.strip button')?.addEventListener('click', () => { local.set('wg-18', '1'); $('.strip .age-note').remove(); });
@@ -383,6 +394,7 @@
   const co = ['legalName', 'regNumber', 'address', 'jurisdiction'].map(k => C.company[k]).filter(Boolean);
   $('#co').textContent = co.length ? co.join(', ') : 'registered name, number, address and jurisdiction to be confirmed.';
   $('#yr').textContent = new Date().getFullYear();
+  { const a = $('#play-stake'); a.href = STAKE; a.setAttribute('aria-label', 'Play on Stake (opens stake.com in a new tab; Withdrawal Gaming releases are not available yet)'); }
   $('#foot-bc').innerHTML = barcode('WITHDRAWAL-GAMING');
   addEventListener('hashchange', route);
   route();
